@@ -1,66 +1,32 @@
-## Foundry
+# Auction-Managed AMM (am-AMM)
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Overview
 
-Foundry consists of:
+This project implements an Auction-Managed Automated Market Maker (am-AMM) using Uniswap v4 hooks. The am-AMM aims to address two key challenges in AMM design:
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+1. Reducing losses from informed orderflow
+2. Maximizing revenue from uninformed orderflow
 
-## Documentation
+## Key Components
 
-https://book.getfoundry.sh/
+### AuctionManagedAMMHook
 
-## Usage
+This contract implements the Uniswap v4 hook interface to provide the core functionality of the am-AMM:
 
-### Build
+- Allows fee-free trades for the current pool manager
+- Implements dynamic fee calculation
+- Collects and distributes fees
 
-```shell
-$ forge build
-```
+### AuctionManager
 
-### Test
+This contract manages the auction for the pool manager position:
 
-```shell
-$ forge test
-```
+- Handles bidding process
+- Determines the current pool manager
 
-### Format
+## Features
 
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+- On-chain auction for pool manager rights
+- Dynamic fee setting by the pool manager
+- Fee-free trades for the pool manager, enabling efficient arbitrage
+- Fee collection and distribution to liquidity providers
