@@ -26,9 +26,13 @@ contract AuctionManagedAMMHook is BaseHook {
     // How many times has the moving average been updated?
     // Needed as the denominator to update it the next time based on the moving average formula
     uint104 public movingAverageGasPriceCount;
+    // The last time we distributed fees
+    uint256 public lastDistributionTimestamp;
 
     // The default base fees we will charge
     uint24 public constant BASE_FEE = 3000; // 0.3%
+    // How often we distribute fees to LPs
+    uint256 public constant DISTRIBUTION_INTERVAL = 1 days;
 
     error MustUseDynamicFee();
 
@@ -93,7 +97,15 @@ contract AuctionManagedAMMHook is BaseHook {
         override
         returns (bytes4, int128)
     {
+        // Update our moving average gas price
         updateMovingAverage();
+
+        // Distribute fees if it's time
+        if (block.timestamp >= lastDistributionTimestamp + DISTRIBUTION_INTERVAL) {
+            distributeFees();
+            lastDistributionTimestamp = block.timestamp;
+        }
+
         return (this.afterSwap.selector, 0);
     }
 
@@ -115,7 +127,7 @@ contract AuctionManagedAMMHook is BaseHook {
     }
 
     // Distribute fees to LPs
-    function distributeFees() external {
+    function distributeFees() internal {
         address currentManager = auctionManager.getCurrentManager();
         // uint256 feesToDistribute = managerFees[currentManager];
         managerFees[currentManager] = 0;
