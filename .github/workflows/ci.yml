@@ -1,6 +1,10 @@
-name: test
+name: CI Check
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 env:
   FOUNDRY_PROFILE: ci
@@ -10,20 +14,16 @@ jobs:
     strategy:
       fail-fast: true
 
-    name: Foundry project
+    name: Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
+      - uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
-
-      - name: Run Forge build
-        run: |
+      - run: |
           forge --version
           forge build --sizes
         id: build
@@ -32,3 +32,8 @@ jobs:
         run: |
           forge test -vvv
         id: test
+
+      - name: Run Forge format check
+        run: |
+          forge fmt --check
+        id: format
