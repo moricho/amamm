@@ -53,7 +53,6 @@ contract AuctionManagedAMMHook is BaseHook {
             return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, 0);
         }
 
-        // Implement dynamic fee logic here
         uint256 fee = calculateDynamicFee(key, params);
         managerFees[currentManager] += fee;
 
@@ -65,7 +64,7 @@ contract AuctionManagedAMMHook is BaseHook {
         view
         returns (uint256)
     {
-        // Implement dynamic fee calculation logic
+        // TODO: Implement dynamic fee calculation logic
         // This could involve analyzing recent trading volume, volatility, etc.
     }
 
@@ -74,7 +73,7 @@ contract AuctionManagedAMMHook is BaseHook {
         // uint256 feesToDistribute = managerFees[currentManager];
         managerFees[currentManager] = 0;
 
-        // Distribute fees to LPs
+        // TODO: Distribute fees to LPs
         // This would involve interacting with the Uniswap v4 pool to properly allocate fees
     }
 }
